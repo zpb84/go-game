@@ -1,4 +1,4 @@
-package go_board
+package game
 
 import "testing"
 
@@ -9,10 +9,10 @@ func TestSets(t *testing.T) {
 		s := SetOfPoints{}
 		s.Add(p1)
 		s.Add(p2)
-		if len(s) != 2 {
+		if s.Len() != 2 {
 			t.Error("error count")
 		}
-		for p := range s {
+		for p := range s.points {
 			if p != p1 && p != p2 {
 				t.Error("error equal")
 			}
@@ -34,7 +34,7 @@ func TestSets(t *testing.T) {
 		s1 := NewSetPoints(all[0]...)
 		s2 := NewSetPoints(all[1]...)
 		s3 := MergePoints(s1, s2)
-		if len(s3) != 5 {
+		if s3.Len() != 5 {
 			t.Error("Merge: count")
 		}
 		if s3.Exists(NewPoint(10, 10)) {
@@ -48,7 +48,7 @@ func TestSets(t *testing.T) {
 			}
 		}
 		s4 := ExcludePoints(s1, s2)
-		if len(s4) != 2 {
+		if s4.Len() != 2 {
 			t.Error("Exclude: count")
 		}
 		if s4.Exists(NewPoint(1, 1)) {

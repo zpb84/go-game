@@ -1,4 +1,4 @@
-package go_board
+package game
 
 // Ход
 type Move struct {

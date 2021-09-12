@@ -1,4 +1,4 @@
-package go_board
+package game
 
 type Point struct {
 	Row int

@@ -1,10 +1,8 @@
-package go_board
+package game
 
 import (
 	"errors"
 	"reflect"
-
-	"github.com/zpb84/go-game/lib/go_types"
 )
 
 var (
@@ -14,17 +12,17 @@ var (
 
 type Group struct {
 	// Цвет группы
-	color go_types.Color
+	Color Color
 	// Камни
-	stones SetOfPoints
+	Stones SetOfPoints
 	// Степени свободы группы
 	liberties SetOfPoints
 }
 
-func NewGroup(color go_types.Color, stones SetOfPoints, liberties SetOfPoints) *Group {
+func NewGroup(color Color, stones SetOfPoints, liberties SetOfPoints) *Group {
 	return &Group{
-		color:     color,
-		stones:    stones,
+		Color:     color,
+		Stones:    stones,
 		liberties: liberties,
 	}
 }
@@ -32,7 +30,7 @@ func NewGroup(color go_types.Color, stones SetOfPoints, liberties SetOfPoints) *
 // RemoveLiberty удаление степеней свободы
 func (g *Group) RemoveLiberty(points ...Point) {
 	for _, p := range points {
-		delete(g.liberties, p)
+		g.liberties.Remove(p)
 	}
 }
 
@@ -44,24 +42,24 @@ func (g *Group) AddLiberty(points ...Point) {
 }
 
 // Merge объединение цепочек одноцветных камней
-func (g *Group) Merge(other *Group) (*Group, error) {
+func (g *Group) Merge(other *Group) *Group {
 	if g == nil || other == nil {
-		return nil, ErrGroupIsNil
+		return nil
 	}
-	if other.color != g.color {
-		return nil, ErrGroupColor
+	if other.Color != g.Color {
+		return nil
 	}
-	combinedStones := MergePoints(g.stones, other.stones)
+	combinedStones := MergePoints(g.Stones, other.Stones)
 	combinedLiberties := ExcludePoints(MergePoints(g.liberties, other.liberties), combinedStones)
 	return &Group{
-		color:     g.color,
-		stones:    combinedStones,
+		Color:     g.Color,
+		Stones:    combinedStones,
 		liberties: combinedLiberties,
-	}, nil
+	}
 }
 
 func (g *Group) NumLiberties() int {
-	return len(g.liberties)
+	return g.liberties.Len()
 }
 
 func (g *Group) Equal(other *Group) bool {

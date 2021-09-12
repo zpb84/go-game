@@ -1,19 +1,21 @@
-package go_board
+package game
 
 import (
 	"testing"
-
-	"github.com/zpb84/go-game/lib/go_types"
 )
 
 func TestGroup(t *testing.T) {
 	t.Run("Groups", func(t *testing.T) {
+		var g1, g2 *Group
+		if !g1.Equal(g2) {
+			t.Error("Equal nil")
+		}
 		s1 := NewSetPoints(
 			NewPoint(1, 1),
 			NewPoint(1, 2),
 			NewPoint(2, 1),
 		)
-		g1 := NewGroup(go_types.WHITE, s1, s1)
+		g1 = NewGroup(WHITE, s1, s1)
 		if g1.NumLiberties() != 3 {
 			t.Error("NumLiberties: liberties count")
 		}
@@ -30,23 +32,27 @@ func TestGroup(t *testing.T) {
 			NewPoint(1, 2),
 			NewPoint(2, 1),
 		)
-		g2 := NewGroup(go_types.WHITE, s2, s2)
+		g2 = NewGroup(WHITE, s2, s2)
 		if g1.Equal(g2) {
 			t.Error("Equal")
 		}
-		g1 = nil
-		g2 = nil
+		s1 = NewSetPoints(
+			NewPoint(1, 1),
+			NewPoint(1, 2),
+			NewPoint(2, 1),
+		)
+		g1 = NewGroup(WHITE, s1, s1)
 		if !g1.Equal(g2) {
-			t.Error("Equal nil")
+			t.Error("Not equal")
 		}
 	})
 	t.Run("Groups.Merge", func(t *testing.T) {
 		var g1, g2 *Group
-		g3, err := g1.Merge(g2)
-		if g3 != nil || err == nil {
+		g3 := g1.Merge(g2)
+		if g3 != nil {
 			t.Error("Merge nil")
 		}
-		g1 = NewGroup(go_types.WHITE,
+		g1 = NewGroup(WHITE,
 			NewSetPoints(
 				NewPoint(1, 1),
 				NewPoint(2, 1),
@@ -58,7 +64,7 @@ func TestGroup(t *testing.T) {
 				NewPoint(3, 0),
 			),
 		)
-		g2 = NewGroup(go_types.BLACK,
+		g2 = NewGroup(BLACK,
 			NewSetPoints(
 				NewPoint(1, 1),
 				NewPoint(1, 2),
@@ -70,11 +76,11 @@ func TestGroup(t *testing.T) {
 				NewPoint(0, 3),
 			),
 		)
-		g3, err = g1.Merge(g2)
-		if g3 != nil || err == nil {
+		g3 = g1.Merge(g2)
+		if g3 != nil {
 			t.Error("Merge color")
 		}
-		g2 = NewGroup(go_types.WHITE,
+		g2 = NewGroup(WHITE,
 			NewSetPoints(
 				NewPoint(1, 1),
 				NewPoint(1, 2),
@@ -86,9 +92,9 @@ func TestGroup(t *testing.T) {
 				NewPoint(20, 1),
 			),
 		)
-		g3, err = g1.Merge(g2)
-		if g3 == nil && err != nil {
-			t.Errorf("Merge: %v", err)
+		g3 = g1.Merge(g2)
+		if g3 == nil {
+			t.Error("Merge")
 		}
 	})
 }
