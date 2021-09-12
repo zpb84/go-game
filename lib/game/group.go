@@ -14,7 +14,7 @@ type Group struct {
 	// Цвет группы
 	Color Color
 	// Камни
-	Stones SetOfPoints
+	stones SetOfPoints
 	// Степени свободы группы
 	liberties SetOfPoints
 }
@@ -22,7 +22,7 @@ type Group struct {
 func NewGroup(color Color, stones SetOfPoints, liberties SetOfPoints) *Group {
 	return &Group{
 		Color:     color,
-		Stones:    stones,
+		stones:    stones,
 		liberties: liberties,
 	}
 }
@@ -49,11 +49,11 @@ func (g *Group) Merge(other *Group) *Group {
 	if other.Color != g.Color {
 		return nil
 	}
-	combinedStones := MergePoints(g.Stones, other.Stones)
+	combinedStones := MergePoints(g.stones, other.stones)
 	combinedLiberties := ExcludePoints(MergePoints(g.liberties, other.liberties), combinedStones)
 	return &Group{
 		Color:     g.Color,
-		Stones:    combinedStones,
+		stones:    combinedStones,
 		liberties: combinedLiberties,
 	}
 }
@@ -67,4 +67,15 @@ func (g *Group) Equal(other *Group) bool {
 		return true
 	}
 	return reflect.DeepEqual(g, other)
+}
+
+func (g *Group) Copy() *Group {
+	if g == nil {
+		return nil
+	}
+	return &Group{
+		Color:     g.Color,
+		liberties: NewSetPoints(g.liberties.ToArray()...),
+		stones:    NewSetPoints(g.stones.ToArray()...),
+	}
 }

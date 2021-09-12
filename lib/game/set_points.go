@@ -50,6 +50,14 @@ func (s *SetOfPoints) Exists(p Point) bool {
 	return ok
 }
 
+func (s *SetOfPoints) ToArray() []Point {
+	result := make([]Point, 0, len(s.points))
+	for p := range s.points {
+		result = append(result, p)
+	}
+	return result
+}
+
 func NewSetPoints(points ...Point) SetOfPoints {
 	result := SetOfPoints{
 		points: map[Point]struct{}{},

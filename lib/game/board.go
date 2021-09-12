@@ -72,7 +72,7 @@ func (b *Board) PlaceStone(player Color, point Point) error {
 		}
 	}
 	// Обновляем информацию на доске по группам
-	for groupPoint := range newGroup.Stones.points {
+	for groupPoint := range newGroup.stones.points {
 		b.grid[groupPoint] = newGroup
 	}
 	// Уменьшение степеней свободы у цепочек камней противоположного цвета
@@ -113,7 +113,7 @@ func (b *Board) GetGroup(point Point) *Group {
 
 // RemoveGroup удаление цепочки камней
 func (b *Board) RemoveGroup(g *Group) {
-	for point := range g.Stones.points {
+	for point := range g.stones.points {
 		for _, neighbor := range point.Neighbors() {
 			if neighborGroup := b.GetGroup(neighbor); neighborGroup != nil {
 				// Удаление цепочки приводит к увеличению свобод других групп
@@ -124,4 +124,19 @@ func (b *Board) RemoveGroup(g *Group) {
 		}
 		delete(b.grid, point)
 	}
+}
+
+func (b *Board) Copy() *Board {
+	if b == nil {
+		return nil
+	}
+	result := &Board{
+		numRows: b.numRows,
+		numCols: b.numCols,
+		grid:    map[Point]*Group{},
+	}
+	for p, g := range b.grid {
+		result.grid[p] = g.Copy()
+	}
+	return result
 }
