@@ -2,6 +2,8 @@ package game
 
 import "reflect"
 
+// GameState описывает текущее состояние игры.
+// A через поле previousState можно получить состояния всех предыдущих ходов
 type GameState struct {
 	board         *Board
 	nextPlayer    Color
@@ -69,7 +71,8 @@ func (gs *GameState) isMoveSelfCapture(player Color, move *Move) bool {
 	return group.NumLiberties() == 0
 }
 
-// DoesMoveViolateKO проверяет нарушает ои ход правило КО
+// DoesMoveViolateKO проверяет нарушает ли ход правило КО
+// Пробегает по всем состояниям и смотрит, не была ли доска в таком состоянии ранее
 func (gs *GameState) doesMoveViolateKO(player Color, move *Move) bool {
 	if move.point == nil {
 		return false

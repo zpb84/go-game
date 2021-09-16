@@ -1,5 +1,6 @@
 package game
 
+// SetOfPoints множество точек
 type SetOfPoints struct {
 	points map[Point]struct{}
 }
@@ -30,6 +31,7 @@ func ExcludePoints(a, b SetOfPoints) SetOfPoints {
 	return result
 }
 
+// Add добавление точки в множество
 func (s *SetOfPoints) Add(p Point) {
 	if s.points == nil {
 		s.points = map[Point]struct{}{}
@@ -37,19 +39,23 @@ func (s *SetOfPoints) Add(p Point) {
 	s.points[p] = struct{}{}
 }
 
+// Remove удаление точки из множества
 func (s *SetOfPoints) Remove(p Point) {
 	delete(s.points, p)
 }
 
+// Len количество точек в множестве
 func (s *SetOfPoints) Len() int {
 	return len(s.points)
 }
 
+// Exists входит ли точка в это множество
 func (s *SetOfPoints) Exists(p Point) bool {
 	_, ok := s.points[p]
 	return ok
 }
 
+// ToArray преобразование множества в массив точек
 func (s *SetOfPoints) ToArray() []Point {
 	result := make([]Point, 0, len(s.points))
 	for p := range s.points {

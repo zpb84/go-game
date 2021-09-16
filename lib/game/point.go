@@ -1,5 +1,6 @@
 package game
 
+// Point точка на доске
 type Point struct {
 	Row int
 	Col int

@@ -22,7 +22,7 @@ func NewBoard(numRows int, numCols int) *Board {
 	}
 }
 
-// PlaceStone проверка степеней свободы соседних точек
+// PlaceStone - ставит камень на доску и обновляет состояния групп камней на доске
 func (b *Board) PlaceStone(player Color, point Point) error {
 	// Проверка выхода за доску
 	if !b.IsOnGrid(point) {
@@ -126,6 +126,7 @@ func (b *Board) RemoveGroup(g *Group) {
 	}
 }
 
+// Copy реализация глубокого копирования всех полей
 func (b *Board) Copy() *Board {
 	if b == nil {
 		return nil

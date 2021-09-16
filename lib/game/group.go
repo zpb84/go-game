@@ -10,6 +10,7 @@ var (
 	ErrGroupColor = errors.New("colors differ")
 )
 
+// Group описание цепочки(группы) камней
 type Group struct {
 	// Цвет группы
 	Color Color
@@ -58,10 +59,12 @@ func (g *Group) Merge(other *Group) *Group {
 	}
 }
 
+// NumLiberties возвращает количество степеней свободы группы
 func (g *Group) NumLiberties() int {
 	return g.liberties.Len()
 }
 
+// Equal глубокое сравнение групп
 func (g *Group) Equal(other *Group) bool {
 	if g == nil || other == nil {
 		return true
@@ -69,6 +72,7 @@ func (g *Group) Equal(other *Group) bool {
 	return reflect.DeepEqual(g, other)
 }
 
+// Copy создание глубокой копии группы
 func (g *Group) Copy() *Group {
 	if g == nil {
 		return nil

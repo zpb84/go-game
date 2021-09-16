@@ -1,5 +1,6 @@
 package game
 
+// Цвет игроков
 type Color int
 
 const (
@@ -12,6 +13,7 @@ func (c Color) String() string {
 	return [...]string{"BLACK", "WHITE", "NONE"}[c]
 }
 
+// Other - метод возвращает цвет следующего игрока
 func (c Color) Other() Color {
 	switch c {
 	case BLACK:
