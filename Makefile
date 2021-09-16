@@ -8,7 +8,7 @@ BUILD_PATH=$(PROJECT_PATH)/build/app
 MAJOR_VERSION=$(shell git tag | head -1)
 COMMIT_NUMBER=$(shell git rev-list --count HEAD)
 COMMIT_SHA=$(shell git rev-parse --short=8 HEAD)
-VERSION=v.$(MAJOR_VERSION).$(COMMIT_NUMBER).$(COMMIT_SHA)
+VERSION=v.0.$(MAJOR_VERSION).$(COMMIT_NUMBER)
 
 build: clean
 	go build --ldflags "-X 'main.version=$(VERSION)' -X 'main.date=$(DATE)' -X 'main.commit=$(COMMIT_SHA)'" -o $(BUILD_PATH) $(PROJECT_PATH)/cmd
