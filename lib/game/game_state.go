@@ -11,6 +11,10 @@ type GameState struct {
 	lastMove      *Move
 }
 
+func (gs *GameState) Board() *Board {
+	return gs.board
+}
+
 func NewGameState(board *Board, nextPlayer Color, previousState *GameState, lastMove *Move) *GameState {
 	return &GameState{
 		board:         board,
@@ -105,4 +109,15 @@ func (gs *GameState) IsValidMove(move *Move) bool {
 	return gs.board.GetGroup(*move.point) == nil &&
 		!gs.isMoveSelfCapture(gs.nextPlayer, move) &&
 		!gs.doesMoveViolateKO(gs.nextPlayer, move)
+}
+
+func (gs *GameState) NextPlayer() Color {
+	return gs.nextPlayer
+}
+
+func NewGame(boardSize int) *GameState {
+	return &GameState{
+		board:      NewBoard(boardSize, boardSize),
+		nextPlayer: BLACK,
+	}
 }

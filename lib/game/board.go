@@ -141,3 +141,11 @@ func (b *Board) Copy() *Board {
 	}
 	return result
 }
+
+func (b *Board) Rows() int {
+	return b.numRows
+}
+
+func (b *Board) Columns() int {
+	return b.numCols
+}
