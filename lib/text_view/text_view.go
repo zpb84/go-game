@@ -29,7 +29,7 @@ func PrintMove(player game.Color, move *game.Move) {
 	case move.IsResign():
 		strMove = "resigns"
 	default:
-		strMove = fmt.Sprintf("%v%v", cols[move.Point().Col-1], move.Point().Row)
+		strMove = fmt.Sprintf("%s%v", string(cols[move.Point().Col-1]), move.Point().Row)
 	}
 	fmt.Printf("%s %s\n", player, strMove)
 }
