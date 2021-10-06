@@ -2,13 +2,15 @@ package text_view
 
 import (
 	"fmt"
+	"os"
 	"strings"
+	"text/tabwriter"
 
 	"github.com/zpb84/go-game/lib/game"
 )
 
 const (
-	cols = "ABCDEFGHJKLMNOPQRST"
+	cols = "ABCDEFGHJKLMNOPQRSTVWXYZ"
 )
 
 var (
@@ -32,8 +34,23 @@ func PrintMove(player game.Color, move *game.Move) {
 	fmt.Printf("%s %s\n", player, strMove)
 }
 
-func PrintBoard(board *game.Board) {
+func getNamesColumns(count int) string {
 	var builder strings.Builder
+	for index, c := range cols[:count] {
+		if index == 0 {
+			builder.WriteString("\t")
+		} else {
+			builder.WriteString("\t\t")
+		}
+		builder.WriteRune(c)
+	}
+	return builder.String()
+}
+
+func PrintBoard(board *game.Board) {
+	w := tabwriter.NewWriter(os.Stdout, 0, 0, 1, ' ', tabwriter.StripEscape)
+	var builder strings.Builder
+	fmt.Fprintln(w, getNamesColumns(board.Columns()))
 	for row := board.Rows(); row > 0; row-- {
 		builder.Reset()
 		for col := 1; col <= board.Columns(); col++ {
@@ -41,8 +58,10 @@ func PrintBoard(board *game.Board) {
 				Row: row,
 				Col: col,
 			})
+			_, _ = builder.WriteRune('\t')
 			_, _ = builder.WriteRune(stoneToChar[stone])
 		}
-		fmt.Printf("%s\n", builder.String())
+		fmt.Fprintf(w, "%v%s\n", row, builder.String())
 	}
+	w.Flush()
 }

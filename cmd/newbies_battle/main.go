@@ -20,7 +20,7 @@ func main() {
 	}
 	var err error
 	for !g.IsOver() {
-		time.Sleep(10 * time.Millisecond)
+		time.Sleep(1 * time.Millisecond)
 		exec.Command("clear")
 		text_view.PrintBoard(g.Board())
 		botMove := bots[g.NextPlayer()].SelectMove(g)
