@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os/exec"
 	"time"
 
 	"github.com/zpb84/go-game/lib/game"
@@ -21,7 +20,6 @@ func main() {
 	var err error
 	for !g.IsOver() {
 		time.Sleep(1 * time.Millisecond)
-		exec.Command("clear")
 		text_view.PrintBoard(g.Board())
 		botMove := bots[g.NextPlayer()].SelectMove(g)
 		text_view.PrintMove(g.NextPlayer(), botMove)

@@ -50,7 +50,6 @@ func getNamesColumns(count int) string {
 func PrintBoard(board *game.Board) {
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 1, ' ', tabwriter.StripEscape)
 	var builder strings.Builder
-	fmt.Fprintln(w, getNamesColumns(board.Columns()))
 	for row := board.Rows(); row > 0; row-- {
 		builder.Reset()
 		for col := 1; col <= board.Columns(); col++ {
@@ -63,5 +62,6 @@ func PrintBoard(board *game.Board) {
 		}
 		fmt.Fprintf(w, "%v%s\n", row, builder.String())
 	}
+	fmt.Fprintln(w, getNamesColumns(board.Columns()))
 	w.Flush()
 }
