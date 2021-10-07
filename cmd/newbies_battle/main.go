@@ -19,7 +19,7 @@ func main() {
 	}
 	var err error
 	for !g.IsOver() {
-		time.Sleep(6 * time.Millisecond)
+		time.Sleep(1 * time.Millisecond)
 		text_view.PrintBoard(g.Board())
 		botMove := bots[g.NextPlayer()].SelectMove(g)
 		text_view.PrintMove(g.NextPlayer(), botMove)

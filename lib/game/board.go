@@ -6,12 +6,15 @@ var (
 	ErrBoardOutOfBounds    = errors.New("point out of bounds board")
 	ErrBoardColorIsNotNone = errors.New("point has color")
 	ErrBoardMargin         = errors.New("Merge error")
+
+	zobrist = NewZobristHash(20)
 )
 
 type Board struct {
 	numRows int
 	numCols int
 	grid    map[Point]*Group
+	hash    uint64
 }
 
 func NewBoard(numRows int, numCols int) *Board {
@@ -19,6 +22,7 @@ func NewBoard(numRows int, numCols int) *Board {
 		numRows: numRows,
 		numCols: numCols,
 		grid:    map[Point]*Group{},
+		hash:    EMPTY_BOARD,
 	}
 }
 
@@ -75,6 +79,10 @@ func (b *Board) PlaceStone(player Color, point Point) error {
 	for groupPoint := range newGroup.stones.points {
 		b.grid[groupPoint] = newGroup
 	}
+
+	// Применение хеша для данной точки текущего игрока
+	b.hash ^= zobrist.Get(point, player)
+
 	// Уменьшение степеней свободы у цепочек камней противоположного цвета
 	for otherColor := range adjacentOppositeColor {
 		otherColor.RemoveLiberty(point)
@@ -123,6 +131,8 @@ func (b *Board) RemoveGroup(g *Group) {
 			}
 		}
 		delete(b.grid, point)
+		// Оменяем zobrist-хеширование для этого хода
+		b.hash ^= zobrist.Get(point, g.Color)
 	}
 }
 
@@ -164,4 +174,8 @@ func (b *Board) Equal(other *Board) bool {
 		}
 	}
 	return true
+}
+
+func (b *Board) ZobristHash() uint64 {
+	return b.hash
 }
