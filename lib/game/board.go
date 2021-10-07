@@ -149,3 +149,19 @@ func (b *Board) Rows() int {
 func (b *Board) Columns() int {
 	return b.numCols
 }
+
+func (b *Board) Equal(other *Board) bool {
+	if b.numCols != other.numCols ||
+		b.numRows != other.numRows ||
+		len(b.grid) != len(other.grid) {
+		return false
+	}
+	for key, val := range b.grid {
+		if otherVal, ok := other.grid[key]; !ok {
+			return false
+		} else if !val.Equal(otherVal) {
+			return false
+		}
+	}
+	return true
+}

@@ -1,7 +1,5 @@
 package game
 
-import "reflect"
-
 // GameState описывает текущее состояние игры.
 // A через поле previousState можно получить состояния всех предыдущих ходов
 type GameState struct {
@@ -90,7 +88,7 @@ func (gs *GameState) doesMoveViolateKO(player Color, move *Move) bool {
 
 	pastState := gs.previousState
 	for pastState != nil {
-		if reflect.DeepEqual(pastState.board.grid, nextBoard) && pastState.nextPlayer == nextPlayer {
+		if pastState.board.Equal(nextBoard) && pastState.nextPlayer == nextPlayer {
 			return true
 		}
 		pastState = pastState.previousState

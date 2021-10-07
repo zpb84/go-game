@@ -2,7 +2,6 @@ package game
 
 import (
 	"errors"
-	"reflect"
 )
 
 var (
@@ -66,10 +65,27 @@ func (g *Group) NumLiberties() int {
 
 // Equal глубокое сравнение групп
 func (g *Group) Equal(other *Group) bool {
-	if g == nil || other == nil {
+	if g == nil && other == nil {
 		return true
 	}
-	return reflect.DeepEqual(g, other)
+	if other == nil {
+		return false
+	}
+	if len(g.stones.points) != len(other.stones.points) ||
+		len(g.liberties.points) != len(other.liberties.points) {
+		return false
+	}
+	for k := range g.stones.points {
+		if _, ok := other.stones.points[k]; !ok {
+			return false
+		}
+	}
+	for k := range g.liberties.points {
+		if _, ok := other.liberties.points[k]; !ok {
+			return false
+		}
+	}
+	return true
 }
 
 // Copy создание глубокой копии группы

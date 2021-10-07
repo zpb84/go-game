@@ -48,6 +48,7 @@ func getNamesColumns(count int) string {
 }
 
 func PrintBoard(board *game.Board) {
+	fmt.Print("\033[H\033[2J")
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 1, ' ', tabwriter.StripEscape)
 	var builder strings.Builder
 	for row := board.Rows(); row > 0; row-- {
