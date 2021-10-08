@@ -3,6 +3,7 @@ package terminal
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"strconv"
@@ -21,9 +22,9 @@ const (
 
 var (
 	stoneToChar = map[game.Color]rune{
-		game.NONE:  '🔲',
-		game.BLACK: '🌚',
-		game.WHITE: '🌝',
+		game.NONE:  ' ',
+		game.BLACK: 'X',
+		game.WHITE: 'O',
 	}
 )
 
@@ -137,22 +138,9 @@ func printMove(player game.Color, move *game.Move) {
 	fmt.Printf("%s %s\n", player, strMove)
 }
 
-func getNamesColumns(count int) string {
-	var builder strings.Builder
-	for index, c := range cols[:count] {
-		if index == 0 {
-			builder.WriteString("\t")
-		} else {
-			builder.WriteString("\t\t")
-		}
-		builder.WriteRune(c)
-	}
-	return builder.String()
-}
-
 func printBoard(board *game.Board) {
 	fmt.Print("\033[H\033[2J")
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 1, ' ', tabwriter.StripEscape)
+	w := tabwriter.NewWriter(os.Stdout, 1, 0, 1, ' ', tabwriter.StripEscape)
 	var builder strings.Builder
 	for row := board.Rows(); row > 0; row-- {
 		builder.Reset()
@@ -166,8 +154,18 @@ func printBoard(board *game.Board) {
 		}
 		fmt.Fprintf(w, "%v%s\n", row, builder.String())
 	}
-	fmt.Fprintln(w, getNamesColumns(board.Columns()))
+	writeNamesColumns(w, board.Columns())
 	w.Flush()
+}
+
+func writeNamesColumns(w io.Writer, count int) {
+	writer := bufio.NewWriter(w)
+	for _, c := range cols[:count] {
+		_, _ = writer.WriteString("\t")
+		_, _ = writer.WriteRune(c)
+	}
+	_, _ = writer.WriteString("\n")
+	_ = writer.Flush()
 }
 
 func pointFromString(input string) (game.Point, error) {
