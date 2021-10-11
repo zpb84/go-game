@@ -17,10 +17,7 @@ func Play(p Point) Move {
 // PassTurn игрок пропускает свой ход
 func PassTurn() Move {
 	return Move{
-		point: Point{
-			Row: -1,
-			Col: -1,
-		},
+		point:  NewPoint(-1, -1),
 		isPass: true,
 	}
 }
@@ -28,10 +25,7 @@ func PassTurn() Move {
 // Resign игрок завершает игру
 func Resign() Move {
 	return Move{
-		point: Point{
-			Row: -1,
-			Col: -1,
-		},
+		point:    NewPoint(-1, -1),
 		isResign: true,
 	}
 }

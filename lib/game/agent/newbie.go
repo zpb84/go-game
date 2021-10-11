@@ -22,7 +22,7 @@ func (n *newbie) SelectMove(gameState *game.GameState) game.Move {
 	candidates := []game.Point{}
 	for r := 1; r <= gameState.Board().Rows()+1; r++ {
 		for c := 1; c <= gameState.Board().Columns()+1; c++ {
-			candidate := game.Point{Row: r, Col: c}
+			candidate := game.NewPoint(r, c)
 			if gameState.IsValidMove(game.Play(candidate)) && !IsPointAnEye(gameState.Board(), candidate, gameState.NextPlayer()) {
 				candidates = append(candidates, candidate)
 			}

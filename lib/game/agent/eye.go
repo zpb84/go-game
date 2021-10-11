@@ -23,7 +23,7 @@ func IsPointAnEye(board *game.Board, point game.Point, color game.Color) bool {
 	// Переменная для хранения точек вне доски
 	offBoardCorners := 0
 
-	// Коорлинаты всех углов
+	// Координаты всех углов
 	corners := []game.Point{
 		game.NewPoint(point.Row-1, point.Col-1),
 		game.NewPoint(point.Row-1, point.Col+1),

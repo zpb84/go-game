@@ -147,10 +147,7 @@ func printBoard(board *game.Board) {
 	for row := board.Rows(); row > 0; row-- {
 		builder.Reset()
 		for col := 1; col <= board.Columns(); col++ {
-			stone := board.GetColor(game.Point{
-				Row: row,
-				Col: col,
-			})
+			stone := board.GetColor(game.NewPoint(row, col))
 			_, _ = builder.WriteRune('\t')
 			_, _ = builder.WriteRune(stoneToChar[stone])
 		}
@@ -171,7 +168,7 @@ func writeNamesColumns(w io.Writer, count int) {
 }
 
 func pointFromString(input string) (game.Point, error) {
-	zeroPoint := game.Point{}
+	zeroPoint := game.NewPoint(0, 0)
 	if len(input) == 0 {
 		return zeroPoint, ErrEmptyInput
 	}
@@ -183,8 +180,5 @@ func pointFromString(input string) (game.Point, error) {
 	if err != nil {
 		return zeroPoint, fmt.Errorf("number row is incorrect: %v", err)
 	}
-	return game.Point{
-		Row: row,
-		Col: col + 1,
-	}, nil
+	return game.NewPoint(row, col+1), nil
 }
