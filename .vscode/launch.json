@@ -12,6 +12,14 @@
       "program": "${workspaceFolder}/cmd/console"
     },
     {
+      "name": "Run bots",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/cmd/console",
+      "args": ["-bots"]
+    },
+    {
       "name": "Attach",
       "type": "go",
       "request": "launch",

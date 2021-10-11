@@ -18,7 +18,7 @@ type newbie struct {
 
 // SelectMove реализация интерфейса interplay.Agent
 // FIX ME: Можно распаралелить вычисления
-func (n *newbie) SelectMove(gameState *game.GameState) *game.Move {
+func (n *newbie) SelectMove(gameState *game.GameState) game.Move {
 	candidates := []game.Point{}
 	for r := 1; r <= gameState.Board().Rows()+1; r++ {
 		for c := 1; c <= gameState.Board().Columns()+1; c++ {

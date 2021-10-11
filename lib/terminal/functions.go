@@ -35,7 +35,7 @@ func BattlePlayers(boardSize int, l *log.Logger) error {
 	}
 	g := game.NewGame(boardSize)
 	reader := bufio.NewReader(os.Stdin)
-	var move *game.Move
+	var move game.Move
 	for !g.IsOver() {
 		printBoard(g.Board())
 		if g.NextPlayer() == game.BLACK {
@@ -66,7 +66,7 @@ func BattleWithNewbie(boardSize int, l *log.Logger) error {
 	if err = checkBoardSize(boardSize); err != nil {
 		return err
 	}
-	var move *game.Move
+	var move game.Move
 	g := game.NewGame(boardSize)
 	bot := agent.NewNewbie()
 	reader := bufio.NewReader(os.Stdin)
@@ -89,8 +89,10 @@ func BattleWithNewbie(boardSize int, l *log.Logger) error {
 			move = bot.SelectMove(g)
 		}
 		printMove(g.NextPlayer(), move)
-		if g, err = g.ApplyMove(move); err != nil {
+		if newGame, err := g.ApplyMove(move); err != nil {
 			l.Printf("Apply move: %v", err)
+		} else {
+			g = newGame
 		}
 	}
 	return nil
@@ -125,7 +127,7 @@ func checkBoardSize(size int) error {
 	return nil
 }
 
-func printMove(player game.Color, move *game.Move) {
+func printMove(player game.Color, move game.Move) {
 	strMove := ""
 	switch {
 	case move.IsPass():

@@ -11,7 +11,7 @@ var (
 type GameState struct {
 	board      *Board
 	nextPlayer Color
-	lastMove   *Move
+	lastMove   Move
 
 	previousState *GameState
 	previousHash  hashState
@@ -57,7 +57,7 @@ func (gs *GameState) Board() *Board {
 	return gs.board
 }
 
-func NewGameState(board *Board, nextPlayer Color, previousState *GameState, lastMove *Move) *GameState {
+func NewGameState(board *Board, nextPlayer Color, previousState *GameState, lastMove Move) *GameState {
 	return &GameState{
 		board:         board,
 		nextPlayer:    nextPlayer,
@@ -67,11 +67,11 @@ func NewGameState(board *Board, nextPlayer Color, previousState *GameState, last
 }
 
 // ApplyMove применение нового хода, в результате должно получиться новое состояние игры
-func (gs *GameState) ApplyMove(move *Move) (*GameState, error) {
+func (gs *GameState) ApplyMove(move Move) (*GameState, error) {
 	var nextBoard *Board
-	if move.point != nil {
+	if !move.IsNil() {
 		nextBoard = gs.board.Copy()
-		if err := nextBoard.PlaceStone(gs.nextPlayer, *move.point); err != nil {
+		if err := nextBoard.PlaceStone(gs.nextPlayer, move.Point()); err != nil {
 			return nil, err
 		}
 	} else {
@@ -95,9 +95,6 @@ func (gs *GameState) ApplyMove(move *Move) (*GameState, error) {
 
 // IsOver определяет конец игры
 func (gs *GameState) IsOver() bool {
-	if gs.lastMove == nil {
-		return false
-	}
 	if gs.lastMove.isResign {
 		return true
 	}
@@ -105,42 +102,39 @@ func (gs *GameState) IsOver() bool {
 		return false
 	}
 	secondLastMove := gs.previousState.lastMove
-	if secondLastMove == nil {
-		return false
-	}
 	return secondLastMove.isPass && gs.lastMove.isPass
 }
 
-// IsMoveSelfCapture проверяет на самозахват группы (когда степени свободы обнуляются) или на наличие ошибки
+// isMoveSelfCapture проверяет на самозахват группы (когда степени свободы обнуляются) или на наличие ошибки
 // Если true, то такой ход делать нельзя
-func (gs *GameState) isMoveSelfCapture(player Color, move *Move) bool {
-	if move.point == nil {
+func (gs *GameState) isMoveSelfCapture(player Color, move Move) bool {
+	if move.IsNil() {
 		return false
 	}
 	nextBoard := gs.board.Copy()
-	if err := nextBoard.PlaceStone(player, *move.point); err != nil {
+	if err := nextBoard.PlaceStone(player, move.Point()); err != nil {
 		return true
 	}
-	group := nextBoard.GetGroup(*move.point)
+	group := nextBoard.GetGroup(move.Point())
 	return group.NumLiberties() == 0
 }
 
 // DoesMoveViolateKO проверяет нарушает ли ход правило КО
 // Пробегает по всем состояниям и смотрит, не была ли доска в таком состоянии ранее
-func (gs *GameState) doesMoveViolateKO(player Color, move *Move) bool {
+func (gs *GameState) doesMoveViolateKO(player Color, move Move) bool {
 	if UseFastViolateKO {
 		return gs.fastViolateKO(player, move)
 	}
 	return gs.slowViolateKO(player, move)
 }
 
-func (gs *GameState) slowViolateKO(player Color, move *Move) bool {
-	if move.point == nil {
+func (gs *GameState) slowViolateKO(player Color, move Move) bool {
+	if move.IsNil() {
 		return false
 	}
 
 	nextBoard := gs.board.Copy()
-	if err := nextBoard.PlaceStone(player, *move.point); err != nil {
+	if err := nextBoard.PlaceStone(player, move.Point()); err != nil {
 		return true
 	}
 	nextPlayer := player.Other()
@@ -155,13 +149,13 @@ func (gs *GameState) slowViolateKO(player Color, move *Move) bool {
 	return false
 }
 
-func (gs *GameState) fastViolateKO(player Color, move *Move) bool {
-	if move.point == nil {
+func (gs *GameState) fastViolateKO(player Color, move Move) bool {
+	if move.IsNil() {
 		return false
 	}
 
 	nextBoard := gs.board.Copy()
-	if err := nextBoard.PlaceStone(player, *move.point); err != nil {
+	if err := nextBoard.PlaceStone(player, move.Point()); err != nil {
 		panic(fmt.Sprintf("PlaceStone return error: %s", err))
 	}
 
@@ -169,14 +163,14 @@ func (gs *GameState) fastViolateKO(player Color, move *Move) bool {
 }
 
 // IsValidMove провреяет можно ли сделать ход
-func (gs *GameState) IsValidMove(move *Move) bool {
+func (gs *GameState) IsValidMove(move Move) bool {
 	if gs.IsOver() {
 		return false
 	}
 	if move.isPass || move.isResign {
 		return true
 	}
-	return gs.board.GetGroup(*move.point) == nil &&
+	return gs.board.GetGroup(move.Point()) == nil &&
 		!gs.isMoveSelfCapture(gs.nextPlayer, move) &&
 		!gs.doesMoveViolateKO(gs.nextPlayer, move)
 }
