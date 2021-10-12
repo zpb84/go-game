@@ -14,12 +14,12 @@ type Group struct {
 	// Цвет группы
 	Color Color
 	// Камни
-	stones SetOfPoints
+	stones *SetOfPoints
 	// Степени свободы группы
-	liberties SetOfPoints
+	liberties *SetOfPoints
 }
 
-func NewGroup(color Color, stones SetOfPoints, liberties SetOfPoints) *Group {
+func NewGroup(color Color, stones *SetOfPoints, liberties *SetOfPoints) *Group {
 	return &Group{
 		Color:     color,
 		stones:    stones,
@@ -95,7 +95,7 @@ func (g *Group) Copy() *Group {
 	}
 	return &Group{
 		Color:     g.Color,
-		liberties: NewSetPoints(g.liberties.ToArray()...),
-		stones:    NewSetPoints(g.stones.ToArray()...),
+		liberties: g.liberties.Copy(),
+		stones:    g.stones.Copy(),
 	}
 }

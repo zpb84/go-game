@@ -36,7 +36,7 @@ func (b *Board) PlaceStone(player Color, point Point) error {
 	if b.GetColor(point) != NONE {
 		return ErrBoardColorIsNotNone
 	}
-	liberties := SetOfPoints{}
+	liberties := &SetOfPoints{}
 	// Соседние группы того же цвета
 	adjacentSameColor := map[*Group]struct{}{}
 	// Соседние группы противника
@@ -146,8 +146,16 @@ func (b *Board) Copy() *Board {
 		numCols: b.numCols,
 		grid:    map[Point]*Group{},
 	}
+	// Нужно создать только одну копию каждой группы
+	copies := map[*Group]*Group{}
 	for p, g := range b.grid {
-		result.grid[p] = g.Copy()
+		if c, ok := copies[g]; ok {
+			result.grid[p] = c
+		} else {
+			c = g.Copy()
+			result.grid[p] = c
+			copies[g] = c
+		}
 	}
 	return result
 }

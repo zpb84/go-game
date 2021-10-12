@@ -6,8 +6,8 @@ type SetOfPoints struct {
 }
 
 // MergePoints объединяет множества точек в новое множество
-func MergePoints(sets ...SetOfPoints) SetOfPoints {
-	result := SetOfPoints{
+func MergePoints(sets ...*SetOfPoints) *SetOfPoints {
+	result := &SetOfPoints{
 		points: map[Point]struct{}{},
 	}
 	for _, s := range sets {
@@ -19,8 +19,8 @@ func MergePoints(sets ...SetOfPoints) SetOfPoints {
 }
 
 // ExcludePoints формирует новое множество точек из разницы a-b
-func ExcludePoints(a, b SetOfPoints) SetOfPoints {
-	result := SetOfPoints{
+func ExcludePoints(a, b *SetOfPoints) *SetOfPoints {
+	result := &SetOfPoints{
 		points: map[Point]struct{}{},
 	}
 	for k := range a.points {
@@ -64,8 +64,18 @@ func (s *SetOfPoints) ToArray() []Point {
 	return result
 }
 
-func NewSetPoints(points ...Point) SetOfPoints {
-	result := SetOfPoints{
+func (s *SetOfPoints) Copy() *SetOfPoints {
+	result := map[Point]struct{}{}
+	for p := range s.points {
+		result[p] = struct{}{}
+	}
+	return &SetOfPoints{
+		points: result,
+	}
+}
+
+func NewSetPoints(points ...Point) *SetOfPoints {
+	result := &SetOfPoints{
 		points: map[Point]struct{}{},
 	}
 	for _, p := range points {

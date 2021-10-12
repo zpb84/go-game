@@ -3,25 +3,26 @@ package game
 import (
 	"encoding/json"
 	"errors"
+	"testing"
 )
 
 // jsonBoardState Описание состояния доски в JSON-формате.
 // Камни по правилам будут расстанавливаться по доске
 type jsonBoardState struct {
-	White []Point `json:"white"`
 	Black []Point `json:"black"`
+	White []Point `json:"white"`
 }
 
-// LoadState тестовый метод для отладки. Нужен для загрузки состояния доски
-func LoadStateFromJSON(array []byte) (*GameState, error) {
-	state := &jsonBoardState{}
-	if err := json.Unmarshal(array, state); err != nil {
+// LoadGameFromJSON тестовый метод для отладки. Нужен для загрузки состояния доски
+func LoadGameFromJSON(array []byte, boardSize int) (*GameState, error) {
+	allMoves := &jsonBoardState{}
+	if err := json.Unmarshal(array, allMoves); err != nil {
 		return nil, err
 	}
-	if len(state.Black) != len(state.White) {
+	if len(allMoves.Black) != len(allMoves.White) {
 		return nil, errors.New("len White != len Black")
 	}
-	g := NewGame(9)
+	g := NewGame(boardSize)
 	updater := func(p Point) error {
 		m := Play(p)
 		if new, err := g.ApplyMove(m); err != nil {
@@ -31,13 +32,45 @@ func LoadStateFromJSON(array []byte) (*GameState, error) {
 		}
 		return nil
 	}
-	for index := range state.Black {
-		if err := updater(state.Black[index]); err != nil {
+	for index := range allMoves.Black {
+		if err := updater(allMoves.Black[index]); err != nil {
 			return nil, err
 		}
-		if err := updater(state.White[index]); err != nil {
+		if err := updater(allMoves.White[index]); err != nil {
 			return nil, err
 		}
 	}
 	return g, nil
+}
+
+func TestGrap(t *testing.T) {
+	states := []byte(`
+  {
+    "black": [
+      {"Row": 2,"Col": 1},
+      {"Row": 1,"Col": 2},
+      {"Row": 1,"Col": 3},
+      {"Row": 1,"Col": 4},
+      {"Row": 2,"Col": 5},
+      {"Row": 3,"Col": 5},
+      {"Row": 4,"Col": 4},
+      {"Row": 3,"Col": 3},
+      {"Row": 3,"Col": 2}
+    ],
+    "white": [
+      {"Row": 2,"Col": 2},
+      {"Row": 2,"Col": 3},
+      {"Row": 2,"Col": 4},
+      {"Row": 3,"Col": 4},
+      {"Row": 6,"Col": 1},
+      {"Row": 6,"Col": 2},
+      {"Row": 6,"Col": 3},
+      {"Row": 6,"Col": 4},
+      {"Row": 6,"Col": 5}
+    ]
+  }`)
+	_, err := LoadGameFromJSON(states, 9)
+	if err != nil {
+		t.Error(err)
+	}
 }
