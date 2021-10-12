@@ -17,7 +17,8 @@ import (
 )
 
 const (
-	cols = "ABCDEFGHJKLMNOPQRSTVWXYZ"
+	cols          = "ABCDEFGHJKLMNOPQRSTVWXYZ"
+	clearTerminal = true
 )
 
 var (
@@ -37,7 +38,7 @@ func BattlePlayers(boardSize int, l *log.Logger) error {
 	reader := bufio.NewReader(os.Stdin)
 	var move game.Move
 	for !g.IsOver() {
-		printBoard(g.Board())
+		printBoard(g.Board(), clearTerminal)
 		if g.NextPlayer() == game.BLACK {
 			fmt.Print("BLACK Enter: ")
 		} else {
@@ -71,7 +72,7 @@ func BattleWithNewbie(boardSize int, l *log.Logger) error {
 	bot := agent.NewNewbie()
 	reader := bufio.NewReader(os.Stdin)
 	for !g.IsOver() {
-		printBoard(g.Board())
+		printBoard(g.Board(), clearTerminal)
 		if g.NextPlayer() == game.BLACK {
 			fmt.Print("Enter: ")
 			text, err := reader.ReadString('\n')
@@ -110,7 +111,7 @@ func BattleNewbies(boardSize int) error {
 	var err error
 	for !g.IsOver() {
 		time.Sleep(1 * time.Microsecond)
-		printBoard(g.Board())
+		printBoard(g.Board(), clearTerminal)
 		botMove := bots[g.NextPlayer()].SelectMove(g)
 		printMove(g.NextPlayer(), botMove)
 		if g, err = g.ApplyMove(botMove); err != nil {
@@ -140,8 +141,10 @@ func printMove(player game.Color, move game.Move) {
 	fmt.Printf("%s %s\n", player, strMove)
 }
 
-func printBoard(board *game.Board) {
-	fmt.Print("\033[H\033[2J")
+func printBoard(board *game.Board, clear bool) {
+	if clear {
+		fmt.Print("\033[H\033[2J")
+	}
 	w := tabwriter.NewWriter(os.Stdout, 1, 0, 1, ' ', tabwriter.StripEscape)
 	var builder strings.Builder
 	for row := board.Rows(); row > 0; row-- {
