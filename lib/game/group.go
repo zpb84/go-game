@@ -68,7 +68,8 @@ func (g *Group) Equal(other *Group) bool {
 	if g == nil && other == nil {
 		return true
 	}
-	if other == nil {
+	if g.stones == nil || g.liberties == nil ||
+		other == nil || other.stones == nil || other.liberties == nil {
 		return false
 	}
 	if len(g.stones.points) != len(other.stones.points) ||

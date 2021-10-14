@@ -3,7 +3,7 @@ package game
 import "fmt"
 
 var (
-	UseFastViolateKO = false
+	UseFastViolateKO = true
 )
 
 // GameState описывает текущее состояние игры.
